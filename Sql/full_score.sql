@@ -25,3 +25,12 @@ GROUP BY h.hacker_id, h.name -- Aggregate by hacker id so we can count occurence
 -- of 'top score by id' (name has to be included b/c it's in output)
 HAVING COUNT(h.hacker_id) >=2 -- Condition (after aggregation): Where id appears twice or more   
 ORDER BY COUNT(h.hacker_id) DESC, h.hacker_id ASC; -- Order by the number of challenges the id got full marks for and then id
+
+-- 3d Solution
+SELECT t1.hacker_id,t1.name FROM Hackers t1
+JOIN Submissions t2 ON t1.hacker_id = t2.hacker_id
+JOIN Challenges t3 ON t2.challenge_id = t3.challenge_id
+WHERE (t3.difficulty_level,t2.score) IN (SELECT * FROM Difficulty)
+GROUP BY t1.hacker_id,t1.name
+HAVING COUNT(t2.challenge_id) > 1
+ORDER BY COUNT(t2.challenge_id) DESC,t1.hacker_id ASC;
